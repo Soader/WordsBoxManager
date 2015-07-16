@@ -1,68 +1,42 @@
 package core;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
-
-import java.awt.GridBagLayout;
-
 import javax.swing.JButton;
-
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-
 import javax.swing.SwingConstants;
-
 import java.awt.Dimension;
-
 import modules.LanguageModule;
 import modules.QuickerModule;
-import net.miginfocom.swing.MigLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.UIManager;
-import javax.swing.border.Border;
-
-import sun.security.action.GetLongAction;
-
-import com.sun.awt.AWTUtilities;
-
 import java.awt.Cursor;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class ManagerWindow {
+	public static final String BACKGROUND_IMAGE = "C:\\Users\\pja\\Documents\\tlo.png";
 	private JFrame frame;
 	private JPanel modulesPanel, langModule, quickModule, langPanel,
 			quickPanel;
@@ -111,22 +85,20 @@ public class ManagerWindow {
 	 * Create the application.
 	 */
 	public ManagerWindow() {
-		initialize();
+		buildGUI();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void buildGUI() {
 		frame = new JFrame();
 		frame.setUndecorated(true);
 		frame.setBounds(frameRectangle);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 		frame.setBackground(new Color(0, 0, 0, 0));
 		frame.setContentPane(new TranslucentPane());
 		frame.getContentPane().setLayout(null);
-
 		// creates activity panel showing last activity of other users, needs DB
 		// connection
 		if (ACTIVITY_PANEL) {
@@ -134,7 +106,6 @@ public class ManagerWindow {
 			frame.getContentPane().add(activityPanel);
 			activityPanel.loadNotes();
 		}
-
 		// creates main panel for sub-panels like language panel, activity panel
 		modulesPanel = new JPanel();
 		modulesPanel.setBounds(modulesPanelRectangle);
@@ -142,84 +113,9 @@ public class ManagerWindow {
 		modulesPanel.setOpaque(false);
 		frame.getContentPane().add(modulesPanel);
 
-		// creates container for language module
-		/*
-		 * langModule = new JPanel(); langModule.setBounds(langModuleRectangle);
-		 * langModule.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		 * langModule.setOpaque(false);
-		 */
-		// modulesPanel.add(langModule);
-
-
-
-		// creates panel for creating new language
-		/*
-		 * newLangPanel = new
-		 * NewLanguagePanel(langModule.getBounds().getWidth(),
-		 * langModule.getBounds().getHeight()); addLanguageSetup();
-		 */
-
-		// creates "next" button for language panel
-		/*
-		 * JLabel lblNext = new JLabel(); lblNext.setBounds(modulesPanel.getX()
-		 * + modulesPanel.getWidth() / 2 + panel_width / 2 - 20, 120, 35, 35);
-		 * lblNext.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		 * lblNext.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-		 * getClass().getResource("/arrow_next.png"))));
-		 * lblNext.addMouseListener(new MouseAdapter() {
-		 * 
-		 * @Override public void mouseReleased(MouseEvent e) { JLabel lab =
-		 * (JLabel) e.getSource(); if (e.getX() > 0 && e.getY() > 0 && e.getX()
-		 * < lab.getWidth() && e.getY() < lab.getHeight()) { int index =
-		 * langList.indexOf(activeLang); if (index + 1 < langList.size())
-		 * activeLang = langList.get(index + 1); if (activeLang != null) {
-		 * panelSetup(activeLang); sliderUpdate(); } }
-		 * 
-		 * } }); frame.getContentPane().add(lblNext);
-		 * 
-		 * // creates "previous" button for language panel JLabel lblPrevious =
-		 * new JLabel(); lblPrevious.setBounds(modulesPanel.getX() +
-		 * modulesPanel.getWidth() / 2 - panel_width / 2 - 15, 120, 35, 35);
-		 * lblPrevious
-		 * .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		 * lblPrevious.setIcon(new
-		 * ImageIcon(Toolkit.getDefaultToolkit().getImage(
-		 * getClass().getResource("/arrow_prev.png"))));
-		 * lblPrevious.addMouseListener(new MouseAdapter() {
-		 * 
-		 * @Override public void mouseReleased(MouseEvent e) { JLabel lab =
-		 * (JLabel) e.getSource(); if (e.getX() > 0 && e.getY() > 0 && e.getX()
-		 * < lab.getWidth() && e.getY() < lab.getHeight()) { int index =
-		 * langList.indexOf(activeLang); if (index - 1 >= 0) activeLang =
-		 * langList.get(index - 1);
-		 * 
-		 * if (activeLang != null) { panelSetup(activeLang); sliderUpdate(); } }
-		 * 
-		 * } }); frame.getContentPane().add(lblPrevious);
-		 */
 		decorateInterface();
-
 		createLanguageModule();
-
 		createQuickerModule();
-
-		// sets the first language from list as actually selected language in
-		// the language panel
-		/*
-		 * if (langList.size() > 0) activeLang = langList.get(0);
-		 */
-
-		// initialize language panel if language number (excluding the "fake"
-		// one) is higher than 0
-		/*
-		 * if (activeLang != null && !activeLang.newpanel) {
-		 * languagePanelInitialize(); } else { sliderSetup();
-		 * langModule.add(newLangPanel); }
-		 */
-
-	
-
-	
 	}
 
 	/**
@@ -269,9 +165,7 @@ public class ManagerWindow {
 					activeLang = langList.get(0);
 					sliderUpdate();
 					panelSetup(activeLang);
-
 				}
-
 			}
 		});
 		langPanel.add(lblDelete);
@@ -319,7 +213,6 @@ public class ManagerWindow {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-
 			}
 		});
 		langPanel.add(runBut);
@@ -339,7 +232,6 @@ public class ManagerWindow {
 				}
 			}
 		}
-
 	}
 
 	private void quickPanelInitialize() {
@@ -355,7 +247,6 @@ public class ManagerWindow {
 				super.paintComponent(g);
 				g.drawImage(eng_img, 0, 0, getWidth(), getHeight(), null);
 			}
-
 		};
 		quickPanel.setOpaque(false);
 		quickPanel.setPreferredSize(new Dimension(quickModuleRectangle.width,
@@ -364,7 +255,6 @@ public class ManagerWindow {
 
 		if (!quickList.isEmpty())
 			activeQuicker = quickList.get(0);
-
 	}
 
 	private void quickUpdate() {
@@ -482,6 +372,7 @@ public class ManagerWindow {
 	 *            to which the panel has to be adjusted
 	 */
 	private void panelSetup(Language lang) {
+
 		if (lang.newpanel) {
 
 			langModule.removeAll();
@@ -534,6 +425,7 @@ public class ManagerWindow {
 						newLangPanel.checkbox.isSelected());
 
 				langModule.remove(newLangPanel);
+
 				if (langList.size() > 0)
 					activeLang = langList.get(langList.size() - 2);
 				else
@@ -584,7 +476,6 @@ public class ManagerWindow {
 			} else
 				slider.slots[i].setIcon(null);
 		}
-
 	}
 
 	/**
@@ -645,8 +536,7 @@ public class ManagerWindow {
 		JLabel backgroundLabel = new JLabel("");
 		backgroundLabel
 				.setIcon(new ImageIcon(
-						//"C:\\Users\\Pawel\\Documents\\Grafika\\WordsBox\\BGTrans2.png"));
-						"C:\\Users\\pja\\Documents\\tlo.png"));
+						BACKGROUND_IMAGE));
 
 		backgroundLabel.setBounds(0, 0, frameRectangle.width,
 				frameRectangle.height);
@@ -667,9 +557,7 @@ public class ManagerWindow {
 	private void createQuickerModule() {
 		
 		// creates container for "quickers" module
-		
-		
-		
+
 		// loads a list of "quickers" from memory
 		try {
 			File file = new File("quickList.ser");
