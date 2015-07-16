@@ -90,7 +90,6 @@ public class ManagerWindow {
 	 */
 	public static void main(String[] args) {
 		try {
-			System.out.println("Hello GIT");
 			System.out.println("Hello in new branch");
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 		} catch (Throwable e) {
