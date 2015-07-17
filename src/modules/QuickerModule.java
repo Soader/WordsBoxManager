@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -16,7 +15,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.DefaultComboBoxModel;
@@ -195,14 +193,14 @@ public class QuickerModule extends ModulePanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						if (selectedLanguage.newpanel)
+						if (currentLanguage.newpanel)
 							return;
 						File file = new File("WordsBox.jar");
 						if (file.exists()) {
 							ProcessBuilder pb = new ProcessBuilder("java",
 									"-jar", "WordsBox.jar",
-									selectedLanguage.name,
-									selectedLanguage.path, "quicker");
+									currentLanguage.name,
+									currentLanguage.path, "quicker");
 							pb.start();
 						} else {
 							System.out.println("Can't find " + file);
@@ -229,11 +227,11 @@ public class QuickerModule extends ModulePanel {
 							&& e.getY() < lab.getHeight()) {
 						int user = JOptionPane.showConfirmDialog(null,
 								"Are you sure you want to delete \n\n"
-										+ selectedLanguage.name,
+										+ currentLanguage.name,
 								"Delete quicker", 0);
 						if (user == 0) {
-							langListDelete(selectedLanguage);
-							selectedLanguage = list.get(0);
+							langListDelete(currentLanguage);
+							currentLanguage = list.get(0);
 							getSlider().update();
 							getContentPanel().update();
 						}
@@ -284,9 +282,9 @@ public class QuickerModule extends ModulePanel {
 
 		@Override
 		public void update() {
-			langName.setText(selectedLanguage.name);
-			logo.setIcon(selectedLanguage.icon);
-			lblWordsNum.setText(selectedLanguage.wordsNumber + "");
+			langName.setText(currentLanguage.name);
+			logo.setIcon(currentLanguage.icon);
+			lblWordsNum.setText(currentLanguage.wordsNumber + "");
 			repaint();
 			revalidate();
 		}
@@ -389,7 +387,7 @@ public class QuickerModule extends ModulePanel {
 
 						module.remove(creationPanel);
 						if (list.size() > 0)
-							selectedLanguage = list.get(list.size() - 2);
+							currentLanguage = list.get(list.size() - 2);
 						else
 							return;
 

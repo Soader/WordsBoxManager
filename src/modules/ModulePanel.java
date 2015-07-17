@@ -4,12 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -20,17 +17,10 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import core.Language;
 import core.RepeatManager;
 
@@ -38,7 +28,7 @@ public abstract class ModulePanel extends JPanel {
 
 	protected static final String MODULE_DIR = "modules";
 	private static ArrayList<ModulePanel> modules = new ArrayList<ModulePanel>();
-	protected Language selectedLanguage;
+	protected Language currentLanguage;
 	private static final long serialVersionUID = 1L;
 	protected ArrayList<Language> list = new ArrayList<Language>();
 	private Slider slider;
@@ -51,18 +41,40 @@ public abstract class ModulePanel extends JPanel {
 	protected Color fieldColor = new Color(163, 190, 255);
 	
 
-	public ModulePanel(String s) {
-		if (s == null) // TODO null check
+	public ModulePanel(String path) {
+		if (path == null) { // TODO null check, exception
 			return;
-		listPath = s;
+		}
+		listPath = path;
 		module = this;
 		modules.add(this);
-		
+		loadLanguageList();// loads a list of languages from memory
 
-		// loads a list of languages from memory
+			for (Language lang : list) {
+			RepeatManager.initRepeats(lang);// calculates words to repeat for every language on the list
+		}
+
+		list.add(new Language(true));// adds special "fake" language to the end of the list, that enables creating new languages
+		currentLanguage = list.get(0);
+		createLanguageFiles();// creates files for every languages if they don't exist
+		setLayout(new BorderLayout());
+		setOpaque(false);
+	}
+
+	private void createLanguageFiles() {
+		for (Language go : list) {
+			if (!go.newpanel && !new File(go.path).exists()) {
+				boolean success = new File(go.path).mkdirs();
+				if (!success) {
+					System.out.println("Path creation failed: " + go.path);
+				}
+			}
+		}
+	}
+
+	private void loadLanguageList() {
 		try {
 			File file = new File(listPath);
-			System.out.println("s = [" + s + "]");
 			if (file.exists()) {
 				FileInputStream in = new FileInputStream(file);
 				ObjectInputStream oin = new tools.HackedObjectInputStream(in);
@@ -73,35 +85,10 @@ public abstract class ModulePanel extends JPanel {
 		} catch (IOException | ClassNotFoundException e2) {
 			e2.printStackTrace();
 		}
-		
-		// calculates words to repeat for every language on the list
-		for (Language go : list)
-			RepeatManager.initRepeats(go);
-
-		// adds special "fake" language to the end of the list, that enables
-		// creating new languages
-		list.add(new Language(true));
-		
-		selectedLanguage = list.get(0);
-		
-
-		// creates files for every languages if they don't exist
-		for (Language go : list) {
-			if (!go.newpanel && !new File(go.path).exists()) {
-				boolean success = new File(go.path).mkdirs();
-				if (!success) {
-					System.out.println("Path creation failed: " + go.path);
-					continue;
-				}
-			}
-		}
-
-		setLayout(new BorderLayout());
-		setOpaque(false);
 	}
 
 	public void addSlider(int cellsNumber) {
-
+		// TODO validate parameter
 		slider = new Slider(cellsNumber);
 		slider.update();
 		Box buttonBar = Box.createHorizontalBox();
@@ -128,8 +115,8 @@ public abstract class ModulePanel extends JPanel {
 		return list;
 	}
 
-	public Language getSelectedLanguage() {
-		return selectedLanguage;
+	public Language getCurrentLanguage() {
+		return currentLanguage;
 	}
 
 	public ContentPanel getContentPanel() {
@@ -140,8 +127,8 @@ public abstract class ModulePanel extends JPanel {
 		return slider;
 	}
 
-	public void setSelectedLanguage(Language language) {
-		selectedLanguage = language;
+	public void setCurrentLanguage(Language language) {
+		currentLanguage = language;
 		slider.update();
 		contentPanel.update();
 	}
@@ -159,10 +146,6 @@ public abstract class ModulePanel extends JPanel {
 	public abstract class ContentPanel extends JPanel {
 
 		private static final long serialVersionUID = 1L;
-
-		public ContentPanel() {
-
-		}
 
 		public abstract void update();
 
@@ -216,14 +199,14 @@ public abstract class ModulePanel extends JPanel {
 					if (e.getX() > 0 && e.getY() > 0
 							&& e.getX() < lab.getWidth()
 							&& e.getY() < lab.getHeight()) {
-						if (selectedLanguage == null) {
+						if (currentLanguage == null) {
 							System.out.println("Selected Language is null"); // to
 																				// do
 							return;
 						}
-						int index = list.indexOf(selectedLanguage);
+						int index = list.indexOf(currentLanguage);
 						if (index - 1 >= 0) {
-							selectedLanguage = list.get(index - 1);
+							currentLanguage = list.get(index - 1);
 							update();
 						}
 					}
@@ -248,14 +231,14 @@ public abstract class ModulePanel extends JPanel {
 					if (e.getX() > 0 && e.getY() > 0
 							&& e.getX() < lab.getWidth()
 							&& e.getY() < lab.getHeight()) {
-						if (selectedLanguage == null) {
+						if (currentLanguage == null) {
 							System.out.println("Selected Language is null"); // to
 																				// do
 							return;
 						}
-						int index = list.indexOf(selectedLanguage);
+						int index = list.indexOf(currentLanguage);
 						if (index + 1 < list.size()) {
-							selectedLanguage = list.get(index + 1);
+							currentLanguage = list.get(index + 1);
 							update();
 
 						}
@@ -281,7 +264,7 @@ public abstract class ModulePanel extends JPanel {
 		}
 
 		protected void update() {
-			int index = list.indexOf(selectedLanguage);
+			int index = list.indexOf(currentLanguage);
 
 			for (int i = 0; i < num; i++) {
 				if (i - num / 2 + index >= 0
@@ -292,7 +275,7 @@ public abstract class ModulePanel extends JPanel {
 					slots[i].setIcon(null);
 			}
 
-			if (selectedLanguage.newpanel) {
+			if (currentLanguage.newpanel) {
 				if (contentPanel != null) {
 					module.remove(contentPanel);
 					module.repaint();

@@ -1,22 +1,18 @@
 package modules;
 
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -107,16 +103,16 @@ public class LanguageModule extends ModulePanel {
             runBut.addActionListener(e -> {
                         System.out.println("It works!");
                         try {
-                            if (selectedLanguage.newpanel)
+                            if (currentLanguage.newpanel)
                                 return;
                             File file = new File("WordsBox.jar");
 
                             if (file.exists()) {
                                 ProcessBuilder pb = new ProcessBuilder("java",
                                         "-jar", "WordsBox.jar",
-                                        selectedLanguage.name,
-                                        selectedLanguage.path,
-                                        selectedLanguage.biggerfont);
+                                        currentLanguage.name,
+                                        currentLanguage.path,
+                                        currentLanguage.biggerfont);
 
                                 File output = new File("ProcessLog.txt");
                                 File errors = new File("ErrorLog.txt");
@@ -161,10 +157,10 @@ public class LanguageModule extends ModulePanel {
                     if (e.getX() > 0 && e.getY() > 0
                             && e.getX() < lab.getWidth()
                             && e.getY() < lab.getHeight()) {
-                        int user = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete \n\n" + selectedLanguage.name, "Delete language", 0);
+                        int user = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete \n\n" + currentLanguage.name, "Delete language", 0);
                         if (user == 0) {
-                            langListDelete(selectedLanguage);
-                            selectedLanguage = list.get(0);
+                            langListDelete(currentLanguage);
+                            currentLanguage = list.get(0);
                             getSlider().update();
                             getContentPanel().update();
                         }
@@ -217,10 +213,10 @@ public class LanguageModule extends ModulePanel {
 
         @Override
         public void update() {
-            langName.setText(selectedLanguage.name);
-            logo.setIcon(selectedLanguage.icon);
-            lblRepeatsNum.setText(selectedLanguage.repeatsNumber + "");
-            lblWordsNum.setText(selectedLanguage.wordsNumber + "");
+            langName.setText(currentLanguage.name);
+            logo.setIcon(currentLanguage.icon);
+            lblRepeatsNum.setText(currentLanguage.repeatsNumber + "");
+            lblWordsNum.setText(currentLanguage.wordsNumber + "");
             repaint();
             revalidate();
         }
@@ -323,7 +319,7 @@ public class LanguageModule extends ModulePanel {
 
                         module.remove(creationPanel);
                         if (list.size() > 0)
-                            selectedLanguage = list.get(list.size() - 2);
+                            currentLanguage = list.get(list.size() - 2);
                         else
                             return;
 
