@@ -40,7 +40,7 @@ public class LanguageModule extends ModulePanel {
             170, 240);
     private static final long serialVersionUID = 1L;
 
-    public LanguageModule(ArrayList<Language> l) {
+    public LanguageModule() {
         super(LIST_PATH);
         addContentPanel(new LanguageContentPanel());
         addCreationPanel(new NewLanguagePanel(LANG_MODULE_RECTANGLE.width,

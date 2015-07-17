@@ -42,7 +42,7 @@ public class QuickerModule extends ModulePanel {
 			0, 270, 240);
 	private static final long serialVersionUID = 1L;
 
-	public QuickerModule(ArrayList<Language> l) {
+	public QuickerModule() {
 		super(LIST_PATH);
 		addContentPanel(new QuickerContentPanel());
 		addCreationPanel(new NewQuickerPanel(QUICKER_MODULE_RECTANGLE.width,

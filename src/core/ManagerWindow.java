@@ -113,9 +113,9 @@ public class ManagerWindow {
 		modulesPanel.setOpaque(false);
 		frame.getContentPane().add(modulesPanel);
 
-		decorateInterface();
-		createLanguageModule();
-		createQuickerModule();
+		decorateWindow();
+		modulesPanel.add(new LanguageModule());
+		modulesPanel.add(new QuickerModule());
 	}
 
 	/**
@@ -479,9 +479,9 @@ public class ManagerWindow {
 	}
 
 	/**
-	 * Creates interface buttons
+	 * Creates decoration for main window with exit and minimize buttons
 	 */
-	private void decorateInterface() {
+	private void decorateWindow() {
 
 		// creates minimize button (main frame)
 		JLabel minimize = new JLabel("");
@@ -546,46 +546,22 @@ public class ManagerWindow {
 	/**
 	 * Creates language module
 	 */
-	private void createLanguageModule() {
-		LanguageModule l = new LanguageModule(langList);
-		modulesPanel.add(l);
+	private void addLanguageModule() {
+		modulesPanel.add(new LanguageModule());
 	}
-	
+
 	/**
 	 * Creates quickers module
 	 */
-	private void createQuickerModule() {
-		
-		// creates container for "quickers" module
-
-		// loads a list of "quickers" from memory
-		try {
-			File file = new File("quickList.ser");
-			if (file.exists()) {
-				FileInputStream in = new FileInputStream(file);
-				ObjectInputStream oin = new ObjectInputStream(in);
-				quickList = (ArrayList<Language>) oin.readObject();
-				in.close();
-				oin.close();
-			}
-		} catch (IOException | ClassNotFoundException e2) {
-			e2.printStackTrace();
-		}
-
-		quickList.add(new Language(true));
-
-		
-		modulesPanel.add(new QuickerModule(quickList));
-		//quickPanelInitialize();
-		//quickUpdate();
+	private void addQuickerModule() {
+		modulesPanel.add(new QuickerModule());
 	}
 
-	
 	/**
 	 * Class used for creating translucent frame.
-	 * 
+	 *
 	 * @author Pawel
-	 * 
+	 *
 	 */
 	public class TranslucentPane extends JPanel {
 

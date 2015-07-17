@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import core.Language;
 import core.RepeatManager;
 
@@ -51,7 +52,7 @@ public abstract class ModulePanel extends JPanel {
 	
 
 	public ModulePanel(String s) {
-		if (s == null)
+		if (s == null) // TODO null check
 			return;
 		listPath = s;
 		module = this;
