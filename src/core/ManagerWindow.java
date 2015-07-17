@@ -167,7 +167,7 @@ public class ManagerWindow {
 					panelSetup(activeLang);
 				}
 			}
-		});
+		});//blah
 		langPanel.add(lblDelete);
 
 		// creates label displaying language logo (icon)
