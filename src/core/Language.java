@@ -14,7 +14,7 @@ public class Language implements Serializable{
 	private static final long serialVersionUID = 1L;
 	public String name, path, biggerfont;
 	public ImageIcon icon, icon_min;
-	public boolean newpanel;
+	private boolean newpanel;
 	public int repeatsNumber, wordsNumber;
 	
 	
@@ -30,6 +30,10 @@ public class Language implements Serializable{
 			this.biggerfont = "jap";
 		else
 			this.biggerfont = "nobigger";
+	}
+
+	public boolean isNewPanel(){
+		return newpanel;
 	}
 	
 	public Language(boolean newPanel){

@@ -103,7 +103,7 @@ public class LanguageModule extends ModulePanel {
             runBut.addActionListener(e -> {
                         System.out.println("It works!");
                         try {
-                            if (currentLanguage.newpanel)
+                            if (currentLanguage.isNewPanel())
                                 return;
                             File file = new File("WordsBox.jar");
 
@@ -178,7 +178,7 @@ public class LanguageModule extends ModulePanel {
             Iterator<Language> i = list.iterator();
             while (i.hasNext()) {
                 Language s = i.next();
-                if (s.newpanel) {
+                if (s.isNewPanel()) {
                     temp = s;
                     i.remove();
                 }
@@ -202,7 +202,7 @@ public class LanguageModule extends ModulePanel {
             if (temp != null)
                 list.add(temp);
             for (Language go : list)
-                if (!go.newpanel && !new File(go.path).exists()) {
+                if (!go.isNewPanel() && !new File(go.path).exists()) {
                     boolean success = new File(go.path).mkdirs();
                     if (!success) {
                         System.out.println("Path creation failed: " + go.path);
@@ -360,7 +360,7 @@ public class LanguageModule extends ModulePanel {
             Iterator<Language> i = list.iterator();
             while (i.hasNext()) {
                 Language s = i.next();
-                if (s.newpanel) {
+                if (s.isNewPanel()) {
                     temp = s;
                     i.remove();
                 }
@@ -386,7 +386,7 @@ public class LanguageModule extends ModulePanel {
             if (temp != null)
                 list.add(temp);
             for (Language go : list)
-                if (!go.newpanel && !new File(go.path).exists()) {
+                if (!go.isNewPanel() && !new File(go.path).exists()) {
                     boolean success = new File(go.path).mkdirs();
                     if (!success) {
                         System.out.println("Path creation failed: " + go.path);
