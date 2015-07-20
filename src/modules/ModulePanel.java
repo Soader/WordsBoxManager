@@ -14,7 +14,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -35,8 +34,7 @@ public abstract class ModulePanel extends JPanel {
     private ContentPanel contentPanel;
     protected CreationPanel creationPanel;
     protected ModulePanel module;
-    protected Image bg_img = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(getClass().getResource("/langBG.png"))).getImage();
+    protected Image bg_img = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/langBG.png"))).getImage();
     protected String listPath;
     protected Color fieldColor = new Color(163, 190, 255);
 
