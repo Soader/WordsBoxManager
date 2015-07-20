@@ -28,6 +28,10 @@ public class ManagerWindow {
 	public static final long DIVIDER = 86400000;
 	private Rectangle modulesPanelRectangle = new Rectangle(0, 130, 500, 300);
 	private Rectangle frameRectangle = new Rectangle(100, 100, 850, 480);
+	private Rectangle minButBounds = new Rectangle(frameRectangle.width - 60, 3, 20, 14);
+	private Rectangle exitButBounds = new Rectangle(frameRectangle.width - 30, 3, 20, 14);
+	private Rectangle dragLabelBounds = new Rectangle(0, 0, frameRectangle.width - 70, 13);
+	private Rectangle backgroundLabelBounds = new Rectangle(0, 0, frameRectangle.width,	frameRectangle.height);
 	public static final boolean DEBUG = true;
 	private static final boolean ACTIVITY_PANEL = false;
 
@@ -95,37 +99,20 @@ public class ManagerWindow {
 	 */
 	private void decorateWindow() {
 
-		// creates minimize button (main frame)
-		JLabel minimize = new JLabel("");
-		minimize.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		minimize.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				JLabel lab = (JLabel) e.getSource();
-				if (e.getX() > 0 && e.getY() > 0 && e.getX() < lab.getWidth()
-						&& e.getY() < lab.getHeight())
-					frame.setState(Frame.ICONIFIED);
-			}
-		});
-		minimize.setBounds(frameRectangle.width - 60, 3, 20, 14);
-		frame.getContentPane().add(minimize);
+		addMinimizeButton();
+		addExitButton();
+		addDragLabel();
+		addBackgroundLabel();
+	}
 
-		// creates exit button (main frame)
-		JLabel exit = new JLabel("");
-		exit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		exit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				JLabel lab = (JLabel) e.getSource();
-				if (e.getX() > 0 && e.getY() > 0 && e.getX() < lab.getWidth()
-						&& e.getY() < lab.getHeight())
-					System.exit(0);
-			}
-		});
-		exit.setBounds(frameRectangle.width - 30, 3, 20, 14);
-		frame.getContentPane().add(exit);
+	private void addBackgroundLabel() {
+		JLabel backgroundLabel = new JLabel("");
+		backgroundLabel.setIcon(new ImageIcon(BACKGROUND_IMAGE));
+		backgroundLabel.setBounds(backgroundLabelBounds);
+		frame.getContentPane().add(backgroundLabel);
+	}
 
-		// creates invisible label for dragging the main frame
+	private void addDragLabel() {
 		JLabel dragLabel = new JLabel("");
 		dragLabel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -141,18 +128,42 @@ public class ManagerWindow {
 						- MouseY);
 			}
 		});
-		dragLabel.setBounds(0, 0, frameRectangle.width - 70, 13);
+		dragLabel.setBounds(dragLabelBounds);
 		frame.getContentPane().add(dragLabel);
-		
-		// creates label for displaying background image
-		JLabel backgroundLabel = new JLabel("");
-		backgroundLabel
-				.setIcon(new ImageIcon(
-						BACKGROUND_IMAGE));
+	}
 
-		backgroundLabel.setBounds(0, 0, frameRectangle.width,
-				frameRectangle.height);
-		frame.getContentPane().add(backgroundLabel);
+	private void addExitButton() {
+		JLabel exit = new JLabel("");
+		exit.setToolTipText("exit");
+		exit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		exit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				JLabel lab = (JLabel) e.getSource();
+				if (e.getX() > 0 && e.getY() > 0 && e.getX() < lab.getWidth()
+						&& e.getY() < lab.getHeight())
+					System.exit(0);
+			}
+		});
+		exit.setBounds(exitButBounds);
+		frame.getContentPane().add(exit);
+	}
+
+	private void addMinimizeButton() {
+		JLabel minimize = new JLabel("");
+		minimize.setToolTipText("minimize");
+		minimize.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		minimize.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				JLabel lab = (JLabel) e.getSource();
+				if (e.getX() > 0 && e.getY() > 0 && e.getX() < lab.getWidth()
+						&& e.getY() < lab.getHeight())
+					frame.setState(Frame.ICONIFIED);
+			}
+		});
+		minimize.setBounds(minButBounds);
+		frame.getContentPane().add(minimize);
 	}
 
 	/**
