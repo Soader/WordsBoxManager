@@ -32,7 +32,7 @@ public class Language implements Serializable{
 			this.biggerfont = "nobigger";
 	}
 
-	public boolean isNewPanel(){
+	public boolean isCreator(){
 		return newpanel;
 	}
 	

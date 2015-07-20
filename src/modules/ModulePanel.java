@@ -66,7 +66,7 @@ public abstract class ModulePanel extends JPanel {
 
     private void createLanguageFiles() {
         for (Language lang : list) {
-            if (!lang.isNewPanel() && !new File(lang.path).exists()) {
+            if (!lang.isCreator() && !new File(lang.path).exists()) {
                 boolean success = new File(lang.path).mkdirs();
                 if (!success) {
                     System.out.println("Path creation failed: " + lang.path);
@@ -311,7 +311,7 @@ public abstract class ModulePanel extends JPanel {
     }
 
     private void updateModulePanel() {
-        if (currentLanguage.isNewPanel()) {
+        if (currentLanguage.isCreator()) {
             updateCreationPanel();
         } else {
             updateContentPanel();

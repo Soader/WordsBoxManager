@@ -30,18 +30,28 @@ public class LanguageModule extends ModulePanel {
 
     private static final int SLIDER_SIZE = 3;
     private static final String LANG_DIR = "languages";
-    private static final String LIST_PATH = MODULE_DIR + "/" + LANG_DIR
-            + "/langList.ser";
-    private static final Rectangle LANG_MODULE_RECTANGLE = new Rectangle(0, 0,
-            170, 240);
+    private static final String LIST_PATH = MODULE_DIR + "/" + LANG_DIR + "/langList.ser";
+    private static final Rectangle LANG_MODULE_RECTANGLE = new Rectangle(0, 0, 170, 240);
     private static final long serialVersionUID = 1L;
 
     public LanguageModule() {
         super(LIST_PATH);
         addContentPanel(new LanguageContentPanel());
-        addCreationPanel(new NewLanguagePanel(LANG_MODULE_RECTANGLE.width,
-                LANG_MODULE_RECTANGLE.height));
+        addCreationPanel(new NewLanguagePanel(LANG_MODULE_RECTANGLE.width, LANG_MODULE_RECTANGLE.height));
         addSlider(SLIDER_SIZE);
+    }
+
+    private Language getAndDeleteCreator() {
+        Language languageCreator = null;
+        Iterator<Language> iter = list.iterator();
+        while (iter.hasNext()) {
+            Language l = iter.next();
+            if (l.isCreator()) {
+                languageCreator = l;
+                iter.remove();
+            }
+        }
+        return languageCreator;
     }
 
     private class LanguageContentPanel extends ContentPanel {
@@ -70,8 +80,7 @@ public class LanguageModule extends ModulePanel {
             langName.setBounds(width / 2 - (width / 2 - 10), 5, width - 20, 20);
             langName.setHorizontalAlignment(SwingConstants.CENTER);
 
-            // creates labels displaying language repeats (number of words to
-            // repeat)
+            // creates labels displaying language repeats (number of words to repeat)
             lblRepeats.setBounds(10, 130, 70, 20);
             lblRepeatsNum.setBounds(85, 130, 70, 20);
 
@@ -79,11 +88,11 @@ public class LanguageModule extends ModulePanel {
             lblWords.setBounds(10, 150, 70, 20);
             lblWordsNum.setBounds(85, 150, 70, 20);
 
-            buttonsSetup();
+            createRunButton();
+            createDeleteLanguageButton();
 
             setLayout(null);
-            setPreferredSize(new Dimension(LANG_MODULE_RECTANGLE.width,
-                    LANG_MODULE_RECTANGLE.height));
+            setPreferredSize(new Dimension(LANG_MODULE_RECTANGLE.width, LANG_MODULE_RECTANGLE.height));
             add(logo);
             add(lblDelete);
             add(langName);
@@ -94,63 +103,13 @@ public class LanguageModule extends ModulePanel {
             add(runBut);
         }
 
-        private void buttonsSetup() {
-            // creates "run" button starting the WordsBox application
 
-            runBut.setBounds(width / 2 - butWidth / 2, height - butHeight * 2,
-                    butWidth, butHeight);
-
-            runBut.addActionListener(e -> {
-                        System.out.println("It works!");
-                        try {
-                            if (currentLanguage.isNewPanel())
-                                return;
-                            File file = new File("WordsBox.jar");
-
-                            if (file.exists()) {
-                                ProcessBuilder pb = new ProcessBuilder("java",
-                                        "-jar", "WordsBox.jar",
-                                        currentLanguage.name,
-                                        currentLanguage.path,
-                                        currentLanguage.biggerfont);
-
-                                File output = new File("ProcessLog.txt");
-                                File errors = new File("ErrorLog.txt");
-
-                                pb.redirectError(errors);
-                                pb.redirectOutput(output);
-
-                                System.out.println(pb.redirectOutput());
-                                System.out.println(pb.redirectError());
-
-
-                                pb.start();
-
-                            } else {
-                                System.out.println("Can't find " + file);
-                            }
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-
-                    }
-            );
-//			runBut.addActionListener(new ActionListener() {
-//
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//
-//
-//				}
-//			});
-
+        private void createDeleteLanguageButton() {
             // creates "delete language" button
-            lblDelete.setIcon(new ImageIcon(Toolkit.getDefaultToolkit()
-                    .getImage(getClass().getResource("/delete_icon.png"))));
+            lblDelete.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/delete_icon.png"))));
             lblDelete.setBounds(140, 220, 15, 15);
             lblDelete.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             lblDelete.addMouseListener(new MouseAdapter() {
-
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     JLabel lab = (JLabel) e.getSource();
@@ -159,35 +118,52 @@ public class LanguageModule extends ModulePanel {
                             && e.getY() < lab.getHeight()) {
                         int user = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete \n\n" + currentLanguage.name, "Delete language", 0);
                         if (user == 0) {
-                            langListDelete(currentLanguage);
+                            deleteLanguage(currentLanguage);
                             currentLanguage = list.get(0);
                             getSlider().update();
                             getContentPanel().update();
                         }
-
-
                     }
                 }
             });
-
         }
 
-        private void langListDelete(Language lang) {
-            Language temp = null;
+        private void createRunButton() {
+            // creates "run" button starting the WordsBox application
+            runBut.setBounds(width / 2 - butWidth / 2, height - butHeight * 2, butWidth, butHeight);
+            runBut.addActionListener(e -> {
+                        try {
+                            if (currentLanguage.isCreator()) {
+                                return;
+                            }
+                            File file = new File("WordsBox.jar");
+                            if (file.exists()) {
+                                ProcessBuilder pb = new ProcessBuilder("java",
+                                        "-jar", "WordsBox.jar",
+                                        currentLanguage.name,
+                                        currentLanguage.path,
+                                        currentLanguage.biggerfont);
+                                File output = new File("ProcessLog.txt");
+                                File errors = new File("ErrorLog.txt");
+                                pb.redirectError(errors);
+                                pb.redirectOutput(output);
+                                System.out.println(pb.redirectOutput());
+                                System.out.println(pb.redirectError());
+                                pb.start();
+                            } else {
+                                System.out.println("Can't find " + file);
+                            }
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+            );
+        }
 
-            Iterator<Language> i = list.iterator();
-            while (i.hasNext()) {
-                Language s = i.next();
-                if (s.isNewPanel()) {
-                    temp = s;
-                    i.remove();
-                }
-            }
-
+        private void deleteLanguage(Language lang) {
+            Language languageCreator = getAndDeleteCreator();
             list.remove(lang);
-
             // TODO delete path
-
             FileOutputStream fo;
             ObjectOutputStream ob;
             try {
@@ -199,17 +175,24 @@ public class LanguageModule extends ModulePanel {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            if (temp != null)
-                list.add(temp);
-            for (Language go : list)
-                if (!go.isNewPanel() && !new File(go.path).exists()) {
+            if (languageCreator != null) {
+                list.add(languageCreator);
+            }
+            createPathsForLanguages();
+        }
+
+        private void createPathsForLanguages() {
+            for (Language go : list) {
+                if (!go.isCreator() && !new File(go.path).exists()) {
                     boolean success = new File(go.path).mkdirs();
                     if (!success) {
                         System.out.println("Path creation failed: " + go.path);
                         continue;
                     }
                 }
+            }
         }
+
 
         @Override
         public void update() {
@@ -222,11 +205,10 @@ public class LanguageModule extends ModulePanel {
         }
     }
 
-    private class NewLanguagePanel extends CreationPanel {
+    private class NewLanguagePanel extends CreationPanel { //TODO shorten the constructor
 
         private static final long serialVersionUID = 1L;
-        public ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit()
-                .getImage(getClass().getResource("/englishbg.png")));
+        public ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/englishbg.png")));
         public JLabel lbl_name = new JLabel("Language: ");
         public JLabel lbl_icon = new JLabel("Icon: ");
         public JLabel lbl_font = new JLabel("BiggerFont: ");
@@ -237,114 +219,110 @@ public class LanguageModule extends ModulePanel {
         public JCheckBox checkbox = new JCheckBox();
         public JButton btn_create = new JButton("Create");
 
-
-        // START constructor
         public NewLanguagePanel(double width, double height) {
-            int x = (int) width;
-            int y = (int) height;
-            int ButX = 70;
-            int ButY = 30;
-            int logoX = 70;
-            int logoY = 70;
+            int x = (int) width, y = (int) height;
+            Dimension createButDimen = new Dimension(70, 30);
+            Dimension logoDimen = new Dimension(70, 70);
 
-            if (true) {
-                setOpaque(false);
-                setPreferredSize(new Dimension(x, y));
-                setLayout(null);
+            setOpaque(false);
+            setPreferredSize(new Dimension(x, y));
+            setLayout(null);
 
-                lbl_name.setBounds(10, 10, 70, 20);
-                add(lbl_name);
+            lbl_name.setBounds(10, 10, 70, 20);
+            add(lbl_name);
 
-                txtfld_name = new JTextField() {
-                    @Override
-                    public void setBorder(Border border) {
+            txtfld_name = new JTextField() {
+                @Override
+                public void setBorder(Border border) {
+                    // no border to draw
+                }
+            };
+            txtfld_name.setBounds(85, 10, 75, 20);
+            txtfld_name.setBackground(fieldColor);
+            add(txtfld_name);
 
+            lbl_icon.setBounds(10, 35, 70, 20);
+            add(lbl_icon);
+
+            cb.setBounds(50, 35, 110, 20);
+            cb.setBackground(fieldColor);
+            cb.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JComboBox combo = (JComboBox) e.getSource();
+                    String language = (String) combo.getSelectedItem();
+                    icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/" + language + ".png")));
+                    lbl_iconImg.setIcon(icon);
+                }
+            });
+            add(cb);
+
+            lbl_iconImg.setBounds(
+                    x / 2 - (int) logoDimen.getWidth() / 2,
+                    60,
+                    (int) logoDimen.getWidth(),
+                    (int) logoDimen.getHeight());
+            lbl_iconImg.setIcon(icon);
+            add(lbl_iconImg);
+
+            lbl_font.setBounds(10, 135, 70, 20);
+            add(lbl_font);
+
+            checkbox.setBounds(95, 135, 20, 20);
+            checkbox.setOpaque(false);
+            add(checkbox);
+
+            btn_create.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (txtfld_name.getText().isEmpty())
+                        return;
+                    String path = txtfld_name.getText().substring(0,
+                            Math.min(3, txtfld_name.getText().length()));
+                    path = path.toLowerCase();
+                    File file = new File(MODULE_DIR + "/" + LANG_DIR + "/"
+                            + path);
+                    int i = 0;
+                    while (file.exists()) {
+                        file = new File(MODULE_DIR + "/" + LANG_DIR + "/"
+                                + path + i);
+                        i++;
                     }
-                };
-                txtfld_name.setBounds(85, 10, 75, 20);
-                txtfld_name.setBackground(fieldColor);
-                add(txtfld_name);
 
-                lbl_icon.setBounds(10, 35, 70, 20);
-                add(lbl_icon);
+                    langListSave(txtfld_name.getText(), file.getPath()
+                            + "/", icon, checkbox.isSelected());
 
-                cb.setBounds(50, 35, 110, 20);
-                cb.setBackground(fieldColor);
-                cb.addActionListener(new ActionListener() {
+                    module.remove(creationPanel);
+                    if (list.size() > 0)
+                        currentLanguage = list.get(list.size() - 2);
+                    else
+                        return;
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        JComboBox combo = (JComboBox) e.getSource();
-                        String language = (String) combo.getSelectedItem();
-                        icon = new ImageIcon(Toolkit.getDefaultToolkit()
-                                .getImage(
-                                        getClass().getResource(
-                                                "/" + language + ".png")));
-                        lbl_iconImg.setIcon(icon);
+                    if (module.getContentPanel() != null) {
+                        module.add(getContentPanel());
+                        getSlider().update();
+                    } else {
+                        System.out.println("Content panel is null");
                     }
-                });
-                add(cb);
+                    module.repaint();
+                    module.revalidate();
 
-                lbl_iconImg.setBounds(x / 2 - logoX / 2, 60, logoX, logoY);
-                lbl_iconImg.setIcon(icon);
-                add(lbl_iconImg);
+                }
+            });
+            btn_create.setBounds(
+                    x / 2 - (int) createButDimen.getWidth() / 2,
+                    y - (int) createButDimen.getHeight() * 2,
+                    (int) createButDimen.getWidth(),
+                    (int) createButDimen.getHeight());
+            add(btn_create);
 
-                lbl_font.setBounds(10, 135, 70, 20);
-                add(lbl_font);
-
-                checkbox.setBounds(95, 135, 20, 20);
-                checkbox.setOpaque(false);
-                add(checkbox);
-
-                btn_create.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (txtfld_name.getText().isEmpty())
-                            return;
-                        String path = txtfld_name.getText().substring(0,
-                                Math.min(3, txtfld_name.getText().length()));
-                        path = path.toLowerCase();
-                        File file = new File(MODULE_DIR + "/" + LANG_DIR + "/"
-                                + path);
-                        int i = 0;
-                        while (file.exists()) {
-                            file = new File(MODULE_DIR + "/" + LANG_DIR + "/"
-                                    + path + i);
-                            i++;
-                        }
-
-                        langListSave(txtfld_name.getText(), file.getPath()
-                                + "/", icon, checkbox.isSelected());
-
-                        module.remove(creationPanel);
-                        if (list.size() > 0)
-                            currentLanguage = list.get(list.size() - 2);
-                        else
-                            return;
-
-                        if (module.getContentPanel() != null) {
-                            module.add(getContentPanel());
-                            getSlider().update();
-                        } else {
-                            System.out.println("Content panel is null");
-                        }
-                        module.repaint();
-                        module.revalidate();
-
-                    }
-                });
-                btn_create
-                        .setBounds(x / 2 - ButX / 2, y - ButY * 2, ButX, ButY);
-                add(btn_create);
-            }
 
         }
 
-        // END constructor
-
         /**
-         * Adds new language to the list and saves the list to the memory.
+         * Adds new language to the list and saves the list to the file.
          *
          * @param name       of the language
          * @param path       to the language
@@ -353,19 +331,8 @@ public class LanguageModule extends ModulePanel {
          *                   field than normal. Useful for languages like Japanese,
          *                   Chinese
          */
-        private void langListSave(String name, String path, ImageIcon icon,
-                                  boolean biggerfont) {
-            Language temp = null;
-
-            Iterator<Language> i = list.iterator();
-            while (i.hasNext()) {
-                Language s = i.next();
-                if (s.isNewPanel()) {
-                    temp = s;
-                    i.remove();
-                }
-            }
-
+        private void langListSave(String name, String path, ImageIcon icon, boolean biggerfont) {
+            Language languageCreator = getAndDeleteCreator();
             list.add(new Language(name, path, icon, biggerfont));
 
             FileOutputStream fo;
@@ -383,10 +350,10 @@ public class LanguageModule extends ModulePanel {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            if (temp != null)
-                list.add(temp);
+            if (languageCreator != null)
+                list.add(languageCreator);
             for (Language go : list)
-                if (!go.isNewPanel() && !new File(go.path).exists()) {
+                if (!go.isCreator() && !new File(go.path).exists()) {
                     boolean success = new File(go.path).mkdirs();
                     if (!success) {
                         System.out.println("Path creation failed: " + go.path);

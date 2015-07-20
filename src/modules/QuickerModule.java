@@ -123,7 +123,7 @@ public class QuickerModule extends ModulePanel {
 
 			cbLanguages = new JComboBox<Language>();
 			for (Language lang : languageModule.getList()) {
-				if (!lang.isNewPanel()) {
+				if (!lang.isCreator()) {
 					model.addElement(lang);
 
 				}
@@ -139,7 +139,7 @@ public class QuickerModule extends ModulePanel {
 					public void actionPerformed(ActionEvent e) {
 						model.removeAllElements();
 						for (Language lang : languageModule.getList()) {
-							if (!lang.isNewPanel()) {
+							if (!lang.isCreator()) {
 								model.addElement(lang);
 							}
 						}
@@ -193,7 +193,7 @@ public class QuickerModule extends ModulePanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						if (currentLanguage.isNewPanel())
+						if (currentLanguage.isCreator())
 							return;
 						File file = new File("WordsBox.jar");
 						if (file.exists()) {
@@ -247,7 +247,7 @@ public class QuickerModule extends ModulePanel {
 			Iterator<Language> i = list.iterator();
 			while (i.hasNext()) {
 				Language s = i.next();
-				if (s.isNewPanel()) {
+				if (s.isCreator()) {
 					temp = s;
 					i.remove();
 				}
@@ -271,7 +271,7 @@ public class QuickerModule extends ModulePanel {
 			if (temp != null)
 				list.add(temp);
 			for (Language go : list)
-				if (!go.isNewPanel() && !new File(go.path).exists()) {
+				if (!go.isCreator() && !new File(go.path).exists()) {
 					boolean success = new File(go.path).mkdirs();
 					if (!success) {
 						System.out.println("Path creation failed: " + go.path);
@@ -432,7 +432,7 @@ public class QuickerModule extends ModulePanel {
 			Iterator<Language> i = list.iterator();
 			while (i.hasNext()) {
 				Language s = i.next();
-				if (s.isNewPanel()) {
+				if (s.isCreator()) {
 					temp = s;
 					i.remove();
 				}
@@ -459,7 +459,7 @@ public class QuickerModule extends ModulePanel {
 			if (temp != null)
 				list.add(temp);
 			for (Language go : list)
-				if (!go.isNewPanel() && !new File(go.path).exists()) {
+				if (!go.isCreator() && !new File(go.path).exists()) {
 					boolean success = new File(go.path).mkdirs();
 					if (!success) {
 						System.out.println("Path creation failed: " + go.path);
