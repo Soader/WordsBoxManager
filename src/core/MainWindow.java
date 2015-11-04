@@ -1,7 +1,7 @@
 package core;
 
 import java.awt.EventQueue;
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Frame;
@@ -11,21 +11,18 @@ import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import modules.LanguageModule;
 import modules.QuickerModule;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.UIManager;
-import java.awt.Cursor;
-import java.awt.event.MouseMotionAdapter;
+import mvp.IMainWindow;
 
-public class ManagerWindow {
+import java.awt.event.*;
+import java.awt.Cursor;
+
+public class MainWindow implements IMainWindow{
 	public static final String BACKGROUND_IMAGE = "C:\\Users\\pja\\Documents\\tlo.png";
 	private JFrame frame;
 	private JPanel modulesPanel;
 	private int MouseX, MouseY;
 	public static final long DIVIDER = 86400000;
+	private JButton minimizeBut;
 	private Rectangle modulesPanelRectangle = new Rectangle(0, 130, 500, 300);
 	private Rectangle frameRectangle = new Rectangle(100, 100, 850, 480);
 	private Rectangle minButBounds = new Rectangle(frameRectangle.width - 60, 3, 20, 14);
@@ -38,28 +35,12 @@ public class ManagerWindow {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ManagerWindow window = new ManagerWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+
 
 	/**
 	 * Create the application.
 	 */
-	public ManagerWindow() {
+	public MainWindow() {
 		buildGUI();
 	}
 
@@ -67,6 +48,7 @@ public class ManagerWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void buildGUI() {
+
 		frame = new JFrame();
 		frame.setUndecorated(true);
 		frame.setBounds(frameRectangle);
@@ -87,10 +69,11 @@ public class ManagerWindow {
 		modulesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
 		modulesPanel.setOpaque(false);
 		frame.getContentPane().add(modulesPanel);
-
+		minimizeBut = new JButton();
 		decorateWindow();
 		modulesPanel.add(new LanguageModule());
 		modulesPanel.add(new QuickerModule());
+		frame.setVisible(true);
 	}
 
 	/**
@@ -98,7 +81,7 @@ public class ManagerWindow {
 	 */
 	private void decorateWindow() {
 
-		addMinimizeButton();
+		//addMinimizeButton();
 		addExitButton();
 		addDragLabel();
 		addBackgroundLabel();
@@ -148,7 +131,8 @@ public class ManagerWindow {
 		frame.getContentPane().add(exit);
 	}
 
-	private void addMinimizeButton() {
+	public void addMinimizeButton(ActionListener listener) {
+		minimizeBut.addActionListener(listener);
 		JLabel minimize = new JLabel("");
 		minimize.setToolTipText("minimize");
 		minimize.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -157,12 +141,19 @@ public class ManagerWindow {
 			public void mouseReleased(MouseEvent e) {
 				JLabel lab = (JLabel) e.getSource();
 				if (e.getX() > 0 && e.getY() > 0 && e.getX() < lab.getWidth()
-						&& e.getY() < lab.getHeight())
-					frame.setState(Frame.ICONIFIED);
+						&& e.getY() < lab.getHeight()){
+					minimizeBut.doClick();
+				}
+
 			}
 		});
 		minimize.setBounds(minButBounds);
 		frame.getContentPane().add(minimize);
+	}
+
+	@Override
+	public JFrame getMainFrame() {
+		return frame;
 	}
 
 	/**

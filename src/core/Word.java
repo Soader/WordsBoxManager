@@ -21,12 +21,12 @@ public class Word implements Serializable{
 		repeatNumber = 0;
 		this.polish = polish;
 		this.english = english;
-		lastRepeated = (int)(date.getTime() / ManagerWindow.DIVIDER);
+		lastRepeated = (int)(date.getTime() / MainWindow.DIVIDER);
 	}
 	
 	public void repeated(){
 		Date date = new Date();
-		lastRepeated = (int)(date.getTime() / ManagerWindow.DIVIDER);
+		lastRepeated = (int)(date.getTime() / MainWindow.DIVIDER);
 		repeatNumber++;
 	}
 

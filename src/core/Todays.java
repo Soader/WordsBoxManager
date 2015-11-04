@@ -15,6 +15,6 @@ public class Todays implements Serializable{
 	
 	public Todays(){
 		Date date = new Date();
-		day = date.getTime() / ManagerWindow.DIVIDER;
+		day = date.getTime() / MainWindow.DIVIDER;
 	}
 }

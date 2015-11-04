@@ -106,7 +106,7 @@ public class RepeatManager {
 	private static boolean createTodays() {
 		Random rand = new Random();
 		Date date = new Date();
-		int day = (int) (date.getTime() / ManagerWindow.DIVIDER);
+		int day = (int) (date.getTime() / MainWindow.DIVIDER);
 		todaysObject = new Todays();
 		for (Word go : words) {
 			if ((day - go.lastRepeated) >= (2 * go.repeatNumber)
@@ -115,6 +115,7 @@ public class RepeatManager {
 			}
 		}
 		Collections.shuffle(todaysObject.repeatList);
+
 		FileOutputStream fileout;
 		try {
 			fileout = new FileOutputStream(pathTodays);
