@@ -1,23 +1,16 @@
 package core;
 
-import java.awt.EventQueue;
+import java.awt.*;
 import javax.swing.*;
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.FlowLayout;
-import java.awt.Rectangle;
+
 import modules.LanguageModule;
 import modules.QuickerModule;
 import mvp.IMainWindow;
 
 import java.awt.event.*;
-import java.awt.Cursor;
 
 public class MainWindow implements IMainWindow{
-	public static final String BACKGROUND_IMAGE = "C:\\Users\\pja\\Documents\\tlo.png";
+	public ImageIcon BACKGROUND_IMAGE = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tlo.png")));
 	private JFrame frame;
 	private JPanel modulesPanel;
 	private int MouseX, MouseY;
@@ -89,7 +82,7 @@ public class MainWindow implements IMainWindow{
 
 	private void addBackgroundLabel() {
 		JLabel backgroundLabel = new JLabel("");
-		backgroundLabel.setIcon(new ImageIcon(BACKGROUND_IMAGE));
+		backgroundLabel.setIcon(BACKGROUND_IMAGE);
 		backgroundLabel.setBounds(backgroundLabelBounds);
 		frame.getContentPane().add(backgroundLabel);
 	}
