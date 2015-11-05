@@ -199,8 +199,8 @@ public class QuickerModule extends ModulePanel {
 						if (file.exists()) {
 							ProcessBuilder pb = new ProcessBuilder("java",
 									"-jar", "WordsBox.jar",
-									currentLanguage.name,
-									currentLanguage.path, "quicker");
+									currentLanguage.getName(),
+									currentLanguage.getPath(), "quicker");
 							pb.start();
 						} else {
 							System.out.println("Can't find " + file);
@@ -227,7 +227,7 @@ public class QuickerModule extends ModulePanel {
 							&& e.getY() < lab.getHeight()) {
 						int user = JOptionPane.showConfirmDialog(null,
 								"Are you sure you want to delete \n\n"
-										+ currentLanguage.name,
+										+ currentLanguage.getName(),
 								"Delete quicker", 0);
 						if (user == 0) {
 							langListDelete(currentLanguage);
@@ -271,10 +271,10 @@ public class QuickerModule extends ModulePanel {
 			if (temp != null)
 				list.add(temp);
 			for (Language go : list)
-				if (!go.isCreator() && !new File(go.path).exists()) {
-					boolean success = new File(go.path).mkdirs();
+				if (!go.isCreator() && !new File(go.getPath()).exists()) {
+					boolean success = new File(go.getPath()).mkdirs();
 					if (!success) {
-						System.out.println("Path creation failed: " + go.path);
+						System.out.println("Path creation failed: " + go.getPath());
 						continue;
 					}
 				}
@@ -282,9 +282,9 @@ public class QuickerModule extends ModulePanel {
 
 		@Override
 		public void update() {
-			langName.setText(currentLanguage.name);
-			logo.setIcon(currentLanguage.icon);
-			lblWordsNum.setText(currentLanguage.wordsNumber + "");
+			langName.setText(currentLanguage.getName());
+			logo.setIcon(currentLanguage.getIcon());
+			lblWordsNum.setText(currentLanguage.getWordsNumber()+ "");
 			repaint();
 			revalidate();
 		}
@@ -458,11 +458,11 @@ public class QuickerModule extends ModulePanel {
 			}
 			if (temp != null)
 				list.add(temp);
-			for (Language go : list)
-				if (!go.isCreator() && !new File(go.path).exists()) {
-					boolean success = new File(go.path).mkdirs();
+			for (Language language : list)
+				if (!language.isCreator() && !new File(language.getPath()).exists()) {
+					boolean success = new File(language.getPath()).mkdirs();
 					if (!success) {
-						System.out.println("Path creation failed: " + go.path);
+						System.out.println("Path creation failed: " + language.getPath());
 						continue;
 					}
 				}

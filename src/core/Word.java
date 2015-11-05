@@ -9,11 +9,11 @@ public class Word implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public String polish;
-	public String english;
-	public int repeatNumber;
-	public long ID;
-	public int lastRepeated;
+	private String polish;
+	private String english;
+	private int repeatNumber;
+	private long ID;
+	private int lastRepeated;
 	
 	public Word(String polish, String english){
 		Date date = new Date();
@@ -30,4 +30,14 @@ public class Word implements Serializable{
 		repeatNumber++;
 	}
 
+	public int getRepeatNumber() {
+		return repeatNumber;
+	}
+
+	public int getLastRepeated() {
+		return lastRepeated;
+	}
+
+	
+	
 }

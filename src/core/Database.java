@@ -7,8 +7,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 
-
-
 public class Database {
 	
 	private String username, password, dbname, host;

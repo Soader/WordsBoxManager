@@ -10,11 +10,20 @@ public class Todays implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public long day;
-	public ArrayList<Word> repeatList = new ArrayList<Word>();
+	private long day;
+	private ArrayList<Word> repeatList = new ArrayList<Word>();
 	
 	public Todays(){
 		Date date = new Date();
 		day = date.getTime() / MainWindow.DIVIDER;
 	}
+
+	public long getDay() {
+		return day;
+	}
+
+	public ArrayList<Word> getRepeatList() {
+		return repeatList;
+	}
+	
 }

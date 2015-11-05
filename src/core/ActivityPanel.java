@@ -1,10 +1,5 @@
 package core;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.util.ArrayList;
-
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -69,10 +64,4 @@ public class ActivityPanel extends JPanel {
 		worker.execute();
 		
 	}
-	
-
-	
-	
-	
-	
 }

@@ -2,13 +2,9 @@ package core;
 
 import mvp.IMainWindow;
 import mvp.Presenter;
-
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by pja on 2015-08-12.
- */
 public class Application {
 
     public static void main(String[] args) {

@@ -65,10 +65,10 @@ public abstract class ModulePanel extends JPanel {
 
     private void createLanguageFiles() {
         for (Language lang : list) {
-            if (!lang.isCreator() && !new File(lang.path).exists()) {
-                boolean success = new File(lang.path).mkdirs();
+            if (!lang.isCreator() && !new File(lang.getPath()).exists()) {
+                boolean success = new File(lang.getPath()).mkdirs();
                 if (!success) {
-                    System.out.println("Path creation failed: " + lang.path);
+                    System.out.println("Path creation failed: " + lang.getPath());
                 }
             }
         }
@@ -288,7 +288,7 @@ public abstract class ModulePanel extends JPanel {
             for (int slot = 0; slot < slotsNumber; slot++) {
                 int languageIndexForSlot = slot + currentLanguageIndex - (slotsNumber / 2);
                 if (isSlotUsedByLanguage(languageIndexForSlot)) {
-                    slider.slots[slot].setIcon(list.get(languageIndexForSlot).icon_min);
+                    slider.slots[slot].setIcon(list.get(languageIndexForSlot).getIcon_min());
                 } else {
                     slots[slot].setIcon(null);
                 }

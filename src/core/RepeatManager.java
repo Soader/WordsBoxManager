@@ -17,16 +17,16 @@ public class RepeatManager {
 	private static ArrayList<Word> words;
 
 	public static boolean initRepeats(Language lang) {
-		pathTodays = new File(lang.path + "todays.ser");
-		pathWords = new File(lang.path + "words.ser");
+		pathTodays = new File(lang.getPath() + "todays.ser");
+		pathWords = new File(lang.getPath() + "words.ser");
 		words = new ArrayList<Word>();
 		if(!loadWords())
 			return false;
-		lang.wordsNumber = words.size();
-		if (!helloAgain())
+		lang.setWordsNumber(words.size());
+		if (!isNextTime())
 			if(!createTodays())
 				return false;
-		lang.repeatsNumber = todaysObject.repeatList.size();
+		lang.setRepeatsNumber(todaysObject.getRepeatList().size()); 
 		clear();
 		return true;
 	}
@@ -35,7 +35,7 @@ public class RepeatManager {
 		
 		FileInputStream fileIn = null;
 		ObjectInputStream objectIn = null;
-		File file = new File(lang.path + "todays.ser");
+		File file = new File(lang.getPath() + "todays.ser");
 		Todays tod;
 		
 		try {
@@ -45,7 +45,7 @@ public class RepeatManager {
 			objectIn = new tools.HackedObjectInputStream(fileIn);
 			tod = (Todays) objectIn.readObject();
 			return
-				tod.repeatList.size();
+				tod.getRepeatList().size();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			return 0;
@@ -69,7 +69,7 @@ public class RepeatManager {
 	}
 
 	// checks for second run of the application at the same day
-	private static boolean helloAgain() {
+	private static boolean isNextTime() {
 		FileInputStream fileIn = null;
 		ObjectInputStream objectIn = null;
 		Date date = new Date();
@@ -80,7 +80,7 @@ public class RepeatManager {
 			fileIn = new FileInputStream(pathTodays);
 			objectIn = new tools.HackedObjectInputStream(fileIn);
 			todaysObject = (Todays) objectIn.readObject();
-			if (todaysObject.day == date.getTime() / 86400000) {
+			if (todaysObject.getDay() == date.getTime() / 86400000) {
 				return true;
 			} else
 				return false;
@@ -108,13 +108,12 @@ public class RepeatManager {
 		Date date = new Date();
 		int day = (int) (date.getTime() / MainWindow.DIVIDER);
 		todaysObject = new Todays();
-		for (Word go : words) {
-			if ((day - go.lastRepeated) >= (2 * go.repeatNumber)
-					&& rand.nextInt(100) < (50 + 15 * (day - go.lastRepeated - 2 * go.repeatNumber))) {
-				todaysObject.repeatList.add(go);
+		for (Word word : words) {
+			if ((day - word.getLastRepeated()) >= (2 * word.getRepeatNumber())
+					&& rand.nextInt(100) < (50 + 15 * (day - word.getLastRepeated() - 2 * word.getRepeatNumber()))) {
+				todaysObject.getRepeatList().add(word);
 			}
 		}
-		Collections.shuffle(todaysObject.repeatList);
 
 		FileOutputStream fileout;
 		try {

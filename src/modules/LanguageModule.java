@@ -116,7 +116,7 @@ public class LanguageModule extends ModulePanel {
                     if (e.getX() > 0 && e.getY() > 0
                             && e.getX() < lab.getWidth()
                             && e.getY() < lab.getHeight()) {
-                        int user = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete \n\n" + currentLanguage.name, "Delete language", 0);
+                        int user = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete \n\n" + currentLanguage.getName(), "Delete language", 0);
                         if (user == 0) {
                             deleteLanguage(currentLanguage);
                             currentLanguage = list.get(0);
@@ -140,9 +140,9 @@ public class LanguageModule extends ModulePanel {
                             if (file.exists()) {
                                 ProcessBuilder pb = new ProcessBuilder("java",
                                         "-jar", "WordsBox.jar",
-                                        currentLanguage.name,
-                                        currentLanguage.path,
-                                        currentLanguage.biggerfont);
+                                        currentLanguage.getName(),
+                                        currentLanguage.getPath(),
+                                        currentLanguage.getBiggerfont());
                                 File output = new File("ProcessLog.txt");
                                 File errors = new File("ErrorLog.txt");
                                 pb.redirectError(errors);
@@ -182,11 +182,11 @@ public class LanguageModule extends ModulePanel {
         }
 
         private void createPathsForLanguages() {
-            for (Language go : list) {
-                if (!go.isCreator() && !new File(go.path).exists()) {
-                    boolean success = new File(go.path).mkdirs();
+            for (Language language : list) {
+                if (!language.isCreator() && !new File(language.getPath()).exists()) {
+                    boolean success = new File(language.getPath()).mkdirs();
                     if (!success) {
-                        System.out.println("Path creation failed: " + go.path);
+                        System.out.println("Path creation failed: " + language.getPath());
                         continue;
                     }
                 }
@@ -196,10 +196,10 @@ public class LanguageModule extends ModulePanel {
 
         @Override
         public void update() {
-            langName.setText(currentLanguage.name);
-            logo.setIcon(currentLanguage.icon);
-            lblRepeatsNum.setText(currentLanguage.repeatsNumber + "");
-            lblWordsNum.setText(currentLanguage.wordsNumber + "");
+            langName.setText(currentLanguage.getName());
+            logo.setIcon(currentLanguage.getIcon());
+            lblRepeatsNum.setText(currentLanguage.getRepeatsNumber() + "");
+            lblWordsNum.setText(currentLanguage.getWordsNumber() + "");
             repaint();
             revalidate();
         }
@@ -352,11 +352,11 @@ public class LanguageModule extends ModulePanel {
             }
             if (languageCreator != null)
                 list.add(languageCreator);
-            for (Language go : list)
-                if (!go.isCreator() && !new File(go.path).exists()) {
-                    boolean success = new File(go.path).mkdirs();
+            for (Language language : list)
+                if (!language.isCreator() && !new File(language.getPath()).exists()) {
+                    boolean success = new File(language.getPath()).mkdirs();
                     if (!success) {
-                        System.out.println("Path creation failed: " + go.path);
+                        System.out.println("Path creation failed: " + language.getPath());
                         continue;
                     }
                 }

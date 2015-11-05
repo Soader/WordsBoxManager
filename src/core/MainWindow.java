@@ -2,7 +2,7 @@ package core;
 
 import java.awt.*;
 import javax.swing.*;
-
+import tools.Resources;
 import modules.LanguageModule;
 import modules.QuickerModule;
 import mvp.IMainWindow;
@@ -10,11 +10,14 @@ import mvp.IMainWindow;
 import java.awt.event.*;
 
 public class MainWindow implements IMainWindow{
-	public ImageIcon BACKGROUND_IMAGE = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tlo.png")));
+	public static final long DIVIDER = 86400000;
+	public static final boolean DEBUG = true;
+	private static final boolean ACTIVITY_PANEL = false;
+	
+	private ImageIcon backgroundImage; 
 	private JFrame frame;
 	private JPanel modulesPanel;
 	private int MouseX, MouseY;
-	public static final long DIVIDER = 86400000;
 	private JButton minimizeBut;
 	private Rectangle modulesPanelRectangle = new Rectangle(0, 130, 500, 300);
 	private Rectangle frameRectangle = new Rectangle(100, 100, 850, 480);
@@ -22,18 +25,12 @@ public class MainWindow implements IMainWindow{
 	private Rectangle exitButBounds = new Rectangle(frameRectangle.width - 30, 3, 20, 14);
 	private Rectangle dragLabelBounds = new Rectangle(0, 0, frameRectangle.width - 70, 13);
 	private Rectangle backgroundLabelBounds = new Rectangle(0, 0, frameRectangle.width,	frameRectangle.height);
-	public static final boolean DEBUG = true;
-	private static final boolean ACTIVITY_PANEL = false;
-
-	/**
-	 * Launch the application.
-	 */
-
 
 	/**
 	 * Create the application.
 	 */
 	public MainWindow() {
+		backgroundImage = Resources.getInstance().getIcon("/tlo.png");
 		buildGUI();
 	}
 
@@ -82,7 +79,7 @@ public class MainWindow implements IMainWindow{
 
 	private void addBackgroundLabel() {
 		JLabel backgroundLabel = new JLabel("");
-		backgroundLabel.setIcon(BACKGROUND_IMAGE);
+		backgroundLabel.setIcon(backgroundImage);
 		backgroundLabel.setBounds(backgroundLabelBounds);
 		frame.getContentPane().add(backgroundLabel);
 	}
